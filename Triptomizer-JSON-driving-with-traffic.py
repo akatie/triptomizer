@@ -29,7 +29,7 @@ Airport = ("BWI", "IAD", "DCA")
 AirportLoc = ("39.177404,-76.668392", "38.953116,-77.456539","38.851242,-77.040232")
 #airport   lat,long for BWI, IAD, DCA in AirportLoc list
 
-APIKey = 'DD1Zy8yAOnvJmIDxSZzAHzk8OA9ccV5g'
+APIKey =
 #get API key from mapquest developer account (free version)
 
 

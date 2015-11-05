@@ -30,7 +30,7 @@ def main():
     #create the csv file with column headers
     filename= path + "/drivingdata.csv"
     f = csv.writer(open(filename, "wb+"))
-    f.writerow(["airpot", "time of day", "miles", "duration (s)"])
+    f.writerow(["airport", "time of day", "miles", "duration (s)"])
 
     #go through each json files, get the data you need, and append it the csv file
     for j in json_files:

@@ -29,7 +29,7 @@ CostOfGas = 2.38 #$/gal
 GasMileage = 35 #mpg
 TripLength = 4 #trip length in days for MVP
 
-YMD = "2015-12-07T" #assumes specific day, needed to convert driving date (timetimeoftravel) to seconds
+YMD = "2016-01-25T" #assumes specific day, needed to convert driving date (timetimeoftravel) to seconds
 
 
 ##########################################################################

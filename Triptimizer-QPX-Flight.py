@@ -22,7 +22,7 @@ params = {
   "request": {
     "slice": [
       {
-        "origin": "IAD",
+        "origin": "DCA",
         "destination": "LAX",
         "date": "2016-01-25"
 
@@ -39,7 +39,7 @@ params = {
 response = requests.post(url, data=json.dumps(params), headers=headers)
 data = response.json()
 
-with open('IAD.json', 'w') as f:
+with open('DCA.json', 'w') as f:
     json.dump(data, f, indent=2)
 
     #get API data and save as a dictionary (dict is named data)

@@ -6,14 +6,18 @@
 
 import json #required to read  and parse json files
 import os #required for file path function
-import sqlite3 #required to create and manage sql database
-
-
+#import sqlite3 #required to create and manage sql database
+import psycopg2
+import sys
 
 ##########################################################################
 ## Module Variables/Constants
 ##########################################################################
-
+DB = 'triptomizer'
+user = 'XXXXX'
+password = 'XXXXX'
+host = 'localhost'
+port = 'XXXX'
 
 ##########################################################################
 ## Functions
@@ -24,14 +28,19 @@ def main():
     Main execution
     """
 
-    conn = sqlite3.connect('triptomizer.db')
+    #conn = psycopg2.connect('triptomizer.db')
+    conn_str="host={} port={} dbname={} user={} password={}".format(host, port, DB, user, password)
+    conn=psycopg2.connect(conn_str)
     c=conn.cursor()
+
+    #c.execute("DROP TABLE IF EXISTS dirvingdata")
+    #c.execute("DROP TABLE IF EXISTS flighdata")
 
     #create new tables if necessary
     c.execute('CREATE TABLE IF NOT EXISTS drivingdata (timeoftravel varchar(10), airport varchar(20), distance int, duration int)')
     c.execute('CREATE TABLE IF NOT EXISTS flightdata (airport varchar(3), departuretime varchar(24), arrivaltime varchar(24), duration int, cost varchar(20), tripid varchar(40))')
 
-
+'''
     #create path to data files
     path = os.path.join(os.getcwd(), 'data')
 
@@ -98,8 +107,7 @@ def main():
 
 
 
-
-
+'''
 
 ##########################################################################
 ## Execution

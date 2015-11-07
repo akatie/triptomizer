@@ -18,6 +18,7 @@ api_key = "AIzaSyB3IIQfl70t1yLiieM0eGMdDYDUB9noTVY"
 url = "https://www.googleapis.com/qpxExpress/v1/trips/search?key=" + api_key
 headers = {'content-type': 'application/json'}
 
+
 params = {
   "request": {
     "slice": [
@@ -35,11 +36,57 @@ params = {
     "refundable": False
   }
 }
-
 response = requests.post(url, data=json.dumps(params), headers=headers)
 data = response.json()
 
 with open('DCA.json', 'w') as f:
+    json.dump(data, f, indent=2)
+params = {
+  "request": {
+    "slice": [
+      {
+        "origin": "IAD",
+        "destination": "LAX",
+        "date": "2016-01-25"
+
+      }
+    ],
+    "passengers": {
+      "adultCount": 1
+    },
+    "solutions": 200,
+    "refundable": False
+  }
+}
+
+response = requests.post(url, data=json.dumps(params), headers=headers)
+data = response.json()
+
+with open('IAD.json', 'w') as f:
+    json.dump(data, f, indent=2)
+
+params = {
+  "request": {
+    "slice": [
+      {
+        "origin": "BWI",
+        "destination": "LAX",
+        "date": "2016-01-25"
+
+      }
+    ],
+    "passengers": {
+      "adultCount": 1
+    },
+    "solutions": 200,
+    "refundable": False
+  }
+}
+
+response = requests.post(url, data=json.dumps(params), headers=headers)
+data = response.json()
+
+with open('BWI.json', 'w') as f:
     json.dump(data, f, indent=2)
 
     #get API data and save as a dictionary (dict is named data)

@@ -29,7 +29,7 @@ Airport = ("BWI", "IAD", "DCA")
 AirportLoc = ("39.177404,-76.668392", "38.953116,-77.456539","38.851242,-77.040232")
 #airport   lat,long for BWI, IAD, DCA in AirportLoc list
 
-APIKey =
+APIKey = "DD1Zy8yAOnvJmIDxSZzAHzk8OA9ccV5g"
 #get API key from mapquest developer account (free version)
 
 
@@ -47,9 +47,9 @@ def main():
 
     #create variable for date/time of travel
     #set year/month/day to match flight data query for MVP case
-    year="2015"
-    month="11"
-    day="02"
+    year="2016"
+    month="01"
+    day="25"
 
     #iterate through hours 0-24
     hour=0

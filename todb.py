@@ -90,10 +90,10 @@ c.execute("UPDATE drivingdata SET airport=%s WHERE airport=%s", ("BWI", "21240-2
 conn.commit()
 
 #update the values in the flight table to show cost as a Number instead of a string (remove "USD")
-#c.execute("SELECT * FROM flightdata")
-#rows=c.fetchall()
-#for row in rows:
-#    cost_string = row[4]
-#    cost_number = cost_string[3:]
-#    c.execute("UPDATE flightdata SET cost=%s WHERE cost=%s", (cost_string, cost_number))
-#   conn.commit()
+c.execute("SELECT * FROM flightdata")
+rows=c.fetchall()
+for row in rows:
+    cost_string = row[5]
+    cost_number = cost_string[3:]
+    c.execute("UPDATE flightdata SET cost=%s WHERE cost=%s", (cost_number, cost_string))
+    conn.commit()

@@ -29,16 +29,18 @@ c.execute("CREATE TABLE IF NOT EXISTS drivingdata (id serial PRIMARY KEY, timeof
 c.execute("CREATE TABLE IF NOT EXISTS flightdata (id serial PRIMARY KEY, airport varchar(3), departuretime varchar(24), arrivaltime varchar(24), duration int, cost varchar(20), tripid varchar(40));")
 conn.commit()
 
-#create path to driving data files
-path = os.path.join(os.getcwd(), 'data')
+#create paths to driving and flight data files
+drivepath = os.path.join(os.getcwd(), 'data')
+flightpath = os.getcwd()
 
-#find all files that are json and make a list
-json_files = [j for j in os.listdir(path) if j.endswith('.json')] #for driving data
-#    txt_files = [t for t in os.listdir(path) if t.endswith('txt')] #for manually imported flight data files
+#make lists of the files
+drive_jsons = [j for j in os.listdir(drivepath) if j.endswith('.json')]
+flight_jsons = [j for j in os.listdir(flightpath) if ((j.endswith('DCA.json')) or (j.endswith('IAD.json')) or (j.endswith('BWI.json')))]
+
 
 #go through each json file, get the data you need, and save it to the db
-for j in json_files:
-    filename = os.path.join(path, j)
+for j in drive_jsons:
+    filename = os.path.join(drivepath, j)
     with open(filename) as json_file:
         data=json.load(json_file)
         for d in data:
@@ -51,49 +53,41 @@ for j in json_files:
                 c.execute(SQL, (distance, duration, timeoftravel, airportpostalcode))
                 conn.commit()
 
+
+
+
+#go through each text file, convert to json obj, get the data you need, and save it to db
+for j in flight_jsons:
+    filename = os.path.join(flightpath,j)
+    airport=filename[-8:-5]
+    with open(filename, "rb") as json_file:
+        data=json.load(json_file)
+        for d in data:
+            if d == 'trips':
+                tripOptions = data['trips']['tripOption']
+                x=0
+                for t in tripOptions:
+                    tripid=tripOptions[x]["id"]
+                    cost=tripOptions[x]['saleTotal']
+                    duration = tripOptions[x]['slice'][0]['duration']
+                    legs=tripOptions[x]['slice'][0]['segment']
+                    for leg in legs:
+                        if ((leg['leg'][0]['origin'])==airport):
+                            departuretime = leg['leg'][0]['departureTime']
+                        if ((leg['leg'][0]['destination'])=="LAX"):
+                            arrivaltime = leg['leg'][0]['arrivalTime']
+                                # put it in the table and save
+                    SQL = "INSERT INTO flightdata (airport, departuretime, arrivaltime, duration, cost, tripid) VALUES (%s, %s, %s, %s, %s, %s);"
+                    c.execute(SQL, (airport, departuretime, arrivaltime, duration, cost, tripid))
+                    conn.commit()
+                    x=x+1
+
+
 #update the values in the driving table to show airport code in place of airport zip code
 c.execute("UPDATE drivingdata SET airport=%s WHERE airport=%s", ("IAD", "20166"))
 c.execute("UPDATE drivingdata SET airport=%s WHERE airport=%s", ("DCA", "22202"))
 c.execute("UPDATE drivingdata SET airport=%s WHERE airport=%s", ("BWI", "21240-2004"))
 conn.commit()
-
-
-#go through each text file, convert to json obj, get the data you need, and save it to db
-#    for t in txt_files:
-#        filename = os.path.join(path,t)
-    #    with open(filename, "rb") as txt_file:
-    #        data=json.load(txt_file)
-    #    filename2 = t[0:-4]+'_json.txt'
-    #    jsontfilename = os.path.join(path,filename2)
-    #    with open(jsontfilename, "wb") as fout:
-    #        json.dump(data, fout, indent=1)
-#        with open(filename) as txt_file:
-#            data=json.load(txt_file)
-#            for line in data:
-#                if line == 'trips':
-#                    tripOptions = data['trips']['tripOption']
-#                    x=0
-#                    for t in tripOptions:
-#                        tripid=tripOptions[x]["id"]
-#                        cost=tripOptions[x]['saleTotal']
-#                        a = tripOptions[x]['slice'][0]
-#                        duration = a['duration']
-#                        for seg in a['segment']:
-#                            leg=seg['leg']
-#                            for l in leg:
-##                                    airport = l['origin']
-#                                if ((l['origin']== "DCA") or (l['origin']=="IAD") or (l['origin']=="BWI")):
-#                                    departuretime=l['departureTime']
-#                                if ((l['destination'])=="LAX"):
-#                                    arrivaltime=l['arrivalTime']
-
-                                # put it in the table and save
-#                                c.execute("insert into flightdata values (?, ?, ?, ?, ?, ?)", (airport, departuretime, arrivaltime, duration, cost, tripid))
-#                                conn.commit()
-
-                        #print tripid, cost, duration, airport, departuretime, arrivaltime
-
-#                        x=x+1
 
 #update the values in the flight table to show cost as a Number instead of a string (remove "USD")
 #c.execute("SELECT * FROM flightdata")

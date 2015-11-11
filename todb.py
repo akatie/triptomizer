@@ -66,7 +66,7 @@ def main():
                             # put it in the table and save
                             c.execute("insert into drivingdata values (?, ?, ?, ?)", (timeoftravel, airportpostalcode, distance, duration))
                             conn.commit()
-
+#git branch test
     #go through each text file, convert to json obj, get the data you need, and save it to db
     for t in txt_files:
         filename = os.path.join(path,t)

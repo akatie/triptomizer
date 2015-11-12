@@ -46,7 +46,8 @@ for j in drive_jsons:
         for d in data:
             if d=='route':
                 distance=data["route"]["distance"]
-                duration=data["route"]["realTime"]
+                durationmin=data["route"]["realTime"]
+                duration=durationmin/60
                 timeoftravel=data["route"]["options"]["localTime"]
                 airportpostalcode = data["route"]["locations"][1]["postalCode"]
                 SQL = "INSERT INTO drivingdata (distance, duration, timeoftravel, airport) VALUES (%s, %s, %s, %s);"
@@ -54,9 +55,7 @@ for j in drive_jsons:
                 conn.commit()
 
 
-
-
-#go through each text file, convert to json obj, get the data you need, and save it to db
+#go through each flight file, get the data you need, and save it to db
 for j in flight_jsons:
     filename = os.path.join(flightpath,j)
     airport=filename[-8:-5]

@@ -193,13 +193,13 @@ if __name__ == '__main__':
   tree = buildtree(testdata())
   #print "print tree"
   #printtree(tree)
-  print "classify"
-  print classify([300, 370, 70], tree)
-
-  
+  print " "
   prune(tree, 0.1)
-  print "prune tree"
+  print "Decision Tree:"
   printtree(tree)
-  prune(tree, 1.0)
+  #prune(tree, 1.0)
   #print "prune tree, 1.0"
   #printtree(tree)
+  print " "
+  print "classify [300, 370, 70]  flight Fare $300, flight duration 370 minutes, ground travel time 70 minutes:"
+  print classify([300, 370, 70], tree)

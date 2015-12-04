@@ -1,4 +1,4 @@
-flightnumber,flightdeparturetime,airport,flightcost
+flightnumber,departuretime,airport,flightcost
 Alaska 5,9:15:00 AM,DCA,169
 Alaska 5,9:15:00 AM,DCA,169
 Spirit Airlines 141,8:20:00 AM,BWI,118.13

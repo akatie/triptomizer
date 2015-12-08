@@ -26,8 +26,10 @@ c=conn.cursor()
 
 #create new tables if necessary
 c.execute("CREATE TABLE IF NOT EXISTS drivingdata (id serial PRIMARY KEY, timeoftravel varchar(10), airport varchar(20), distance int, duration int);")
-c.execute("CREATE TABLE IF NOT EXISTS flightdata (id serial PRIMARY KEY, airport varchar(3), departuretime varchar(24), arrivaltime varchar(24), duration int, cost varchar(20), tripid varchar(40));")
+c.execute("CREATE TABLE IF NOT EXISTS flightdata (id serial PRIMARY KEY, airport varchar(3), departuretime varchar(24), arrivaltime varchar(24), duration int, cost varchar(20), tripid varchar(40), airline varchar(24));")
 conn.commit()
+#this is a table to create lookup table for airline codes and names
+c.execute("CREATE TABLE IF NOT EXISTS airlinecodesall (id serial PRIMARY KEY, airlinecode varchar(10), airlinename varchar(40));")
 
 #create paths to driving and flight data files
 drivepath = os.path.join(os.getcwd(), 'data')
@@ -63,12 +65,22 @@ for j in flight_jsons:
         data=json.load(json_file)
         for d in data:
             if d == 'trips':
+                carriers = data['trips']['data']['carrier']
+                x=0
+                for car in carriers:
+                    airlinecode=carriers[x]['code']
+                    airlinename=carriers[x]['name']
+                    SQL = "INSERT INTO airlinecodesall (airlinecode, airlinename) VALUES (%s, %s);"
+                    c.execute(SQL, (airlinecode, airlinename))
+                    conn.commit()
+                    x=x+1
                 tripOptions = data['trips']['tripOption']
                 x=0
                 for t in tripOptions:
                     tripid=tripOptions[x]["id"]
                     cost=tripOptions[x]['saleTotal']
                     duration = tripOptions[x]['slice'][0]['duration']
+                    airline=tripOptions[x]['slice'][0]['segment'][0]['flight']['carrier']
                     legs=tripOptions[x]['slice'][0]['segment']
                     for leg in legs:
                         if ((leg['leg'][0]['origin'])==airport):
@@ -76,10 +88,14 @@ for j in flight_jsons:
                         if ((leg['leg'][0]['destination'])=="LAX"):
                             arrivaltime = leg['leg'][0]['arrivalTime']
                                 # put it in the table and save
-                    SQL = "INSERT INTO flightdata (airport, departuretime, arrivaltime, duration, cost, tripid) VALUES (%s, %s, %s, %s, %s, %s);"
-                    c.execute(SQL, (airport, departuretime, arrivaltime, duration, cost, tripid))
+                    SQL = "INSERT INTO flightdata (airport, departuretime, arrivaltime, duration, cost, tripid, airline) VALUES (%s, %s, %s, %s, %s, %s, %s);"
+                    c.execute(SQL, (airport, departuretime, arrivaltime, duration, cost, tripid, airline))
                     conn.commit()
                     x=x+1
+
+
+#populate the airline code and name lookup table
+
 
 
 #update the values in the driving table to show airport code in place of airport zip code

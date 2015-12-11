@@ -48,7 +48,7 @@ conn=psycopg2.connect(conn_str)
 c=conn.cursor()
 
 #create a new table to hold the results of the calculations
-c.execute("CREATE TABLE IF NOT EXISTS computations_12032015 (id serial PRIMARY KEY, totalcost decimal(7,2), totalduration int, airport varchar(3), flightid varchar(40), flightcost varchar(10), parkingcost decimal(7,2), drivingcost decimal(7,2), timeleavehome varchar(30), flightdeparture varchar(30), flightduration int, atairporttime int, drivingduration int);")
+c.execute("CREATE TABLE IF NOT EXISTS computations_12102015 (id serial PRIMARY KEY, totalcost decimal(7,2), totalduration int, airport varchar(3), flightid varchar(40), flightcost varchar(10), parkingcost decimal(7,2), drivingcost decimal(7,2), timeleavehome varchar(30), flightdeparture varchar(30), flightduration int, atairporttime int, drivingduration int, airline varchar(30) );")
 
 #access the flightdata table
 c.execute("SELECT * FROM flightdata")
@@ -57,6 +57,7 @@ for k, v in airportsInfo.iteritems():
     for row in rows:
         if (row[1] == k):
             flightid = row[6]
+            airline=row[7]
             airport = row[1]
             #calculate cost####################################
             #get flight cost
@@ -104,6 +105,6 @@ for k, v in airportsInfo.iteritems():
             #totalduration=flightarrivemin-dtoftravelmin
             totalduration=flightduration+v[1]+drivingduration
     
-            SQL = "INSERT INTO computations_12032015 (flightid, airport, totalcost, flightcost, drivingcost, parkingcost, totalduration, timeleavehome, flightdeparture, flightduration, atairporttime, drivingduration) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);"
-            c.execute(SQL, (flightid, airport, totalcost, flightcost, drivingcost, parkingcost, totalduration, tripstart, flightdeparture, flightduration,  v[1], drivingduration))
+            SQL = "INSERT INTO computations_12102015 (flightid, airport, totalcost, flightcost, drivingcost, parkingcost, totalduration, timeleavehome, flightdeparture, flightduration, atairporttime, drivingduration, airline) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);"
+            c.execute(SQL, (flightid, airport, totalcost, flightcost, drivingcost, parkingcost, totalduration, tripstart, flightdeparture, flightduration,  v[1], drivingduration, airline))
             conn.commit()
